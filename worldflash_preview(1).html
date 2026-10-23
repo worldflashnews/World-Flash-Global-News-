@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WorldFlash — L'info en mouvement</title>
+<style>
+:root {
+  --site-primary: #E63946;
+  --site-on-primary: #FFFFFF;
+  --site-secondary: #14213D;
+  --site-on-secondary: #FFFFFF;
+  --site-background: #F4F6FA;
+  --site-on-background: #172033;
+  --site-font-body: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --site-font-heading: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --site-heading-scale: 1;
+  --site-spacing-scale: 1;
+  --site-radius-scale: 1;
+  --site-decoration-opacity: 1;
+}
+* { box-sizing: border-box; }
+body { margin: 0; font-family: var(--site-font-body); background: var(--site-background); color: var(--site-on-background); }
+#app { min-height: 100vh; width: 100%; background-color: var(--site-background); color: var(--site-on-background); }
+a { color: inherit; text-decoration: none; }
+button, input, select { font: inherit; }
+.topbar { background: var(--site-secondary); color: var(--site-on-secondary); }
+.top-inner { max-width: 1200px; margin: auto; padding: calc(15px * var(--site-spacing-scale)) 22px; display:flex; align-items:center; gap:24px; }
+.logo { display:flex; align-items:center; gap:10px; font-weight:900; font-size:1.42rem; letter-spacing:-.8px; white-space:nowrap; }
+.logo-mark { display:grid; place-items:center; width:37px; height:37px; border-radius:11px; background:var(--site-primary); color:white; font-size:1.25rem; }
+.logo span em { color:#ff6570; font-style:normal; }
+.search { flex:1; position:relative; }
+.search input { width:100%; border:1px solid #ffffff30; background:#ffffff12; color:white; border-radius:12px; padding:12px 15px 12px 42px; outline:none; }
+.search input::placeholder { color:#d5dbe8; }
+.search:before { content:"⌕"; position:absolute; left:15px; top:5px; font-size:1.7rem; color:#cbd5e1; }
+.live-pill { border:1px solid #ffffff35; border-radius:999px; padding:8px 12px; font-size:.8rem; white-space:nowrap; }
+.live-dot { display:inline-block; width:8px; height:8px; background:#ff4d5a; border-radius:50%; margin-right:7px; box-shadow:0 0 0 4px #ff4d5a28; }
+.nav { max-width:1200px; margin:auto; padding:0 22px; display:flex; gap:25px; overflow:auto; scrollbar-width:none; }
+.nav button { border:0; background:transparent; color:#c9d2e3; padding:15px 0 13px; white-space:nowrap; cursor:pointer; border-bottom:3px solid transparent; }
+.nav button.active, .nav button:hover { color:white; border-color:var(--site-primary); }
+main { max-width:1200px; margin:auto; padding:27px 22px 55px; }
+.breaking { display:flex; align-items:center; gap:13px; background:#fff0f0; border:1px solid #ffd3d6; border-radius:12px; padding:12px 15px; margin-bottom:24px; color:#7e2029; font-size:.91rem; }
+.breaking strong { background:var(--site-primary); color:white; border-radius:6px; padding:5px 8px; font-size:.73rem; letter-spacing:.5px; white-space:nowrap; }
+.section-heading { display:flex; justify-content:space-between; align-items:end; gap:15px; margin:0 0 17px; }
+.kicker { text-transform:uppercase; color:var(--site-primary); font-size:.73rem; letter-spacing:1.5px; font-weight:800; margin-bottom:7px; }
+h1,h2,h3,p { margin-top:0; }
+h1 { font-family:var(--site-font-heading); font-size:calc(clamp(1.7rem, 4vw, 2.5rem) * var(--site-heading-scale)); letter-spacing:-1.5px; margin-bottom:0; }
+h2 { font-size:calc(1.25rem * var(--site-heading-scale)); letter-spacing:-.4px; margin-bottom:0; }
+.muted { color:#718096; font-size:.88rem; }
+.hero-grid { display:grid; grid-template-columns:1.55fr 1fr; gap:18px; margin-bottom:30px; }
+.hero-card { border-radius:calc(18px * var(--site-radius-scale)); overflow:hidden; background:#14213d; color:white; min-height:335px; position:relative; isolation:isolate; }
+.hero-visual { position:absolute; inset:0; z-index:-2; background:linear-gradient(135deg,#0e2748,#1f5b73 50%,#e18b57); }
+.hero-visual:before { content:""; position:absolute; inset:0; opacity:var(--site-decoration-opacity); background:radial-gradient(circle at 72% 26%,#ffd8a7 0 5%,transparent 5.5%),linear-gradient(150deg,transparent 40%,#061a32 40.5% 48%,transparent 48.5%),linear-gradient(20deg,#0c1c35 0 28%,transparent 28.5%); }
+.hero-visual:after { content:""; position:absolute; width:180px;height:180px;border:1px solid #ffffff55;border-radius:50%;right:8%;top:8%;box-shadow:0 0 0 22px #ffffff10,0 0 0 45px #ffffff08; }
+.hero-content { position:absolute; inset:auto 0 0; padding:28px; background:linear-gradient(transparent,#071326ef); }
+.tag { display:inline-flex; align-items:center; background:var(--site-primary); color:white; padding:6px 9px; border-radius:5px; font-size:.7rem; font-weight:800; text-transform:uppercase; letter-spacing:.6px; margin-bottom:13px; }
+.hero-content h2 { font-size:clamp(1.45rem,3vw,2.15rem); line-height:1.15; max-width:640px; margin-bottom:12px; }
+.meta { color:#d1d9e7; font-size:.8rem; display:flex; flex-wrap:wrap; gap:12px; }
+.side-stories { display:grid; grid-template-rows:1fr 1fr; gap:18px; }
+.side-card { display:flex; gap:15px; align-items:stretch; background:white; border:1px solid #e6eaf1; border-radius:calc(15px * var(--site-radius-scale)); padding:15px; min-height:155px; }
+.story-art { flex:0 0 105px; border-radius:10px; display:grid; place-items:center; font-size:2rem; min-height:105px; background:linear-gradient(135deg,#dbeafe,#7dd3fc); }
+.story-art.purple { background:linear-gradient(135deg,#ede9fe,#c4b5fd); }
+.side-card h3 { font-size:1rem; line-height:1.32; margin:4px 0 10px; }
+.category-label { color:var(--site-primary); text-transform:uppercase; font-size:.67rem; font-weight:850; letter-spacing:.7px; }
+.side-card .meta { color:#7b8798; font-size:.75rem; }
+.filter-row { display:flex; gap:9px; flex-wrap:wrap; margin-bottom:18px; }
+.filter-chip { border:1px solid #dfe4ed; border-radius:999px; padding:8px 13px; background:white; color:#536075; cursor:pointer; font-size:.82rem; }
+.filter-chip.selected { background:var(--site-secondary); color:white; border-color:var(--site-secondary); }
+.news-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:17px; }
+.news-card { background:white; border:1px solid #e6eaf1; border-radius:calc(15px * var(--site-radius-scale)); overflow:hidden; transition:transform .18s ease, box-shadow .18s ease; }
+.news-card:hover { transform:translateY(-3px); box-shadow:0 12px 30px #14213d12; }
+.news-art { min-height:130px; display:grid; place-items:center; font-size:2.6rem; background:linear-gradient(135deg,#dce7f7,#a9c8eb); }
+.news-art.green { background:linear-gradient(135deg,#dcfce7,#86efac); }
+.news-art.orange { background:linear-gradient(135deg,#ffedd5,#fdba74); }
+.news-art.pink { background:linear-gradient(135deg,#fce7f3,#f9a8d4); }
+.news-art.blue { background:linear-gradient(135deg,#dbeafe,#93c5fd); }
+.news-art.dark { background:linear-gradient(135deg,#d1d5db,#64748b); }
+.news-body { padding:16px; }
+.news-body h3 { font-size:1.02rem; line-height:1.35; margin:7px 0 10px; }
+.news-body p { color:#667085; font-size:.85rem; line-height:1.55; margin-bottom:14px; }
+.card-footer { border-top:1px solid #edf0f5; padding-top:12px; display:flex; justify-content:space-between; align-items:center; gap:8px; color:#8290a3; font-size:.75rem; }
+.bookmark { border:0; background:transparent; cursor:pointer; font-size:1.1rem; color:#7d899a; }
+.bookmark.saved { color:var(--site-primary); }
+.lower-grid { display:grid; grid-template-columns:1.5fr 1fr; gap:18px; margin-top:31px; }
+.panel { background:white; border:1px solid #e6eaf1; border-radius:calc(15px * var(--site-radius-scale)); padding:20px; }
+.panel h2 { margin-bottom:15px; }
+.trending { display:flex; gap:12px; padding:12px 0; border-bottom:1px solid #edf0f5; }
+.trending:last-child { border-bottom:0; }
+.trend-num { color:#cbd2dd; font-weight:900; font-size:1.35rem; min-width:25px; }
+.trending h3 { font-size:.9rem; line-height:1.4; margin:0 0 5px; }
+.trending p { font-size:.75rem; color:#8290a3; margin:0; }
+.ai-panel { background:linear-gradient(145deg,#14213d,#243d67); color:white; }
+.ai-panel p { color:#d5deed; font-size:.9rem; line-height:1.6; }
+.ai-label { color:#ff9ca4; font-size:.72rem; font-weight:800; letter-spacing:1px; text-transform:uppercase; }
+.ai-input { width:100%; background:#ffffff12; border:1px solid #ffffff35; border-radius:10px; color:white; padding:12px; outline:none; margin:6px 0 10px; }
+.ai-input::placeholder { color:#b6c3d8; }
+.primary-btn { border:0; border-radius:10px; background:var(--site-primary); color:white; padding:11px 15px; font-weight:750; cursor:pointer; }
+.ai-result { margin-top:13px; background:#ffffff10; border-radius:10px; padding:12px; font-size:.85rem; line-height:1.5; display:none; }
+.footer { background:#101a2d; color:#c4cede; padding:25px 22px; }
+.footer-inner { max-width:1200px; margin:auto; display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap; font-size:.82rem; }
+.footer strong { color:white; }
+.notice { color:#8995a8; font-size:.75rem; max-width:650px; line-height:1.5; margin-top:10px; }
+.empty { display:none; padding:30px; text-align:center; color:#718096; background:white; border-radius:12px; grid-column:1/-1; }
+@media (max-width:850px) {
+ .top-inner { flex-wrap:wrap; gap:14px; }
+ .search { order:3; flex-basis:100%; }
+ .hero-grid { grid-template-columns:1fr; }
+ .hero-card { min-height:320px; }
+ .side-stories { grid-template-columns:1fr 1fr; grid-template-rows:auto; }
+ .side-card { flex-direction:column; }
+ .story-art { flex-basis:auto; min-height:95px; }
+ .news-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+ .lower-grid { grid-template-columns:1fr; }
+}
+@media (max-width:540px) {
+ main { padding:20px 14px 38px; }
+ .top-inner { padding:13px 14px; }
+ .nav { padding:0 14px; gap:20px; }
+ .live-pill { margin-left:auto; }
+ .breaking { align-items:flex-start; font-size:.82rem; }
+ .side-stories { grid-template-columns:1fr; }
+ .side-card { flex-direction:row; }
+ .story-art { flex-basis:85px; min-height:85px; }
+ .news-grid { grid-template-columns:1fr; }
+ .hero-content { padding:22px; }
+ .section-heading { align-items:flex-start; flex-direction:column; }
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <header class="topbar">
+    <div class="top-inner">
+      <a class="logo" href="#" aria-label="WorldFlash accueil"><span class="logo-mark">W</span><span>World<em>Flash</em></span></a>
+      <div class="search"><input id="searchInput" type="search" placeholder="Rechercher un sujet, un pays, une actualité…" aria-label="Rechercher les actualités"></div>
+      <div class="live-pill"><span class="live-dot"></span>Le monde en direct</div>
+    </div>
+    <nav class="nav" aria-label="Catégories">
+      <button class="active" data-cat="Tout">À la une</button>
+      <button data-cat="Monde">Monde</button>
+      <button data-cat="Afrique">Afrique</button>
+      <button data-cat="Politique">Politique</button>
+      <button data-cat="Économie">Économie</button>
+      <button data-cat="Sport">Sport</button>
+      <button data-cat="Technologie">Technologie</button>
+      <button data-cat="Sciences">Sciences</button>
+      <button data-cat="Culture">Culture</button>
+    </nav>
+  </header>
+  <main>
+    <div class="breaking"><strong>FIL INFO</strong><span>Votre fenêtre sur le monde — retrouvez ici les grands sujets de l'actualité.</span></div>
+    <div class="section-heading">
+      <div><div class="kicker">L'essentiel, partout</div><h1>Le monde ne s'arrête jamais.</h1></div>
+      <span class="muted" id="today"></span>
+    </div>
+    <section class="hero-grid" aria-label="À la une">
+      <article class="hero-card">
+        <div class="hero-visual"></div>
+        <div class="hero-content">
+          <span class="tag">À la une · Monde</span>
+          <h2>Comprendre un monde qui change, une information à la fois.</h2>
+          <p class="meta"><span>🌐 Tour du monde</span><span>•</span><span>Le briefing WorldFlash</span></p>
+        </div>
+      </article>
+      <div class="side-stories">
+        <article class="side-card">
+          <div class="story-art">🌍</div>
+          <div><span class="category-label">Afrique</span><h3>L'Afrique au cœur des transformations mondiales</h3><p class="meta">Repères · 4 min de lecture</p></div>
+        </article>
+        <article class="side-card">
+          <div class="story-art purple">🧠</div>
+          <div><span class="category-label">Technologie</span><h3>Intelligence artificielle : les innovations à suivre</h3><p class="meta">Technologie · 5 min de lecture</p></div>
+        </article>
+      </div>
+    </section>
+    <div class="section-heading">
+      <div><div class="kicker">Sélection éditoriale</div><h2>Explorer les actualités</h2></div>
+      <span class="muted" id="resultCount">9 sujets</span>
+    </div>
+    <div class="filter-row" aria-label="Filtres">
+      <button class="filter-chip selected" data-filter="Tout">Tout voir</button>
+      <button class="filter-chip" data-filter="Monde">🌍 Monde</button>
+      <button class="filter-chip" data-filter="Afrique">🌍 Afrique</button>
+      <button class="filter-chip" data-filter="Sport">⚽ Sport</button>
+      <button class="filter-chip" data-filter="Technologie">🤖 Tech</button>
+      <button class="filter-chip" data-filter="Économie">💹 Économie</button>
+      <button class="filter-chip" data-filter="Sciences">🔬 Sciences</button>
+    </div>
+    <section class="news-grid" id="newsGrid">
+      <article class="news-card" data-category="Monde" data-search="diplomatie coopération internationale pays monde">
+        <div class="news-art blue">🤝</div><div class="news-body"><span class="category-label">Monde</span><h3>Diplomatie : pourquoi le dialogue entre les pays reste essentiel</h3><p>Les négociations internationales peuvent aider à prévenir les crises et à construire des accords durables.</p><div class="card-footer"><span>Analyse · 4 min</span><button class="bookmark" aria-label="Enregistrer">☆</button></div></div>
+      </article>
+      <article class="news-card" data-category="Afrique" data-search="afrique jeunesse innovation entrepreneuriat bénin">
+        <div class="news-art green">🌱</div><div class="news-body"><span class="category-label">Afrique</span><h3>Jeunesse africaine : des idées qui répondent aux défis locaux</h3><p>Des initiatives dans l'éducation, l'agriculture et les services numériques cherchent à transformer le quotidien.</p><div class="card-footer"><span>Dossier · 5 min</span><button class="bookmark" aria-label="Enregistrer">☆</button></div></div>
+      </article>
+      <article class="news-card" data-category="Technologie" data-search="intelligence artificielle numérique innovation technologie">
+        <div class="news-art purple">🤖</div><div class="news-body"><span class="category-label">Technologie</span><h3>IA : comment cette technologie transforme les métiers</h3><p>Automatisation, création et analyse : les compétences numériques prennent une place grandissante.</p><div class="card-footer"><span>Tech · 6 min</span><button class="bookmark" aria-label="Enregistrer">☆</button></div></div>
+      </article>
+      <article class="news-card" data-category="Sport" data-search="football sport compétition joueurs clubs">
+        <div class="news-art orange">⚽</div><div class="news-body"><span class="category-label">Sport</span><h3>Football mondial : les compétitions à suivre cette semaine</h3><p>Retrouvez les résultats, les calendriers et les histoires qui font vibrer les supporters.</p><div class="card-footer"><span>Sport · 3 min</span><button class="bookmark" aria-label="Enregistrer">☆</button></div></div>
+      </article>
+      <article class="news-card" data-category="Économie" data-search="économie inflation emploi entreprises commerce prix">
+        <div class="news-art green">📈</div><div class="news-body"><span class="category-label">Économie</span><h3>Économie : les indicateurs qui influencent la vie quotidienne</h3><p>Prix, emploi, croissance et échanges : quelques repères pour comprendre les tendances économiques.</p><div class="card-footer"><span>Décryptage · 5 min</span><button class="bookmark" aria-label="Enregistrer">☆</button></div></div>
+      </article>
+      <article class="news-card" data-category="Sciences" data-search="science climat environnement recherche planète">
+        <div class="news-art blue">🔬</div><div class="news-body"><span class="category-label">Sciences</span><h3>Climat et environnement : les recherches qui éclairent les choix</h3><p>Les observations scientifiques aident à mieux comprendre les risques et les solutions possibles.</p><div class="card-footer"><span>Sciences · 4 min</span><button class="bookmark" aria-label="Enregistrer">☆</button></div></div>
+      </article>
+      <article class="news-card" data-category="Monde" data-search="éducation école apprentissage accès monde">
+        <div class="news-art pink">📚</div><div class="news-body"><span class="category-label">Monde</span><h3>Éducation : les nouvelles façons d'apprendre à l'ère numérique</h3><p>Ressources en ligne et outils interactifs ouvrent de nouvelles possibilités, mais l'accès reste inégal.</p><div class="card-footer"><span>Société · 4 min</span><button class="bookmark" aria-label="Enregistrer">☆</button></div></div>
+      </article>
+      <article class="news-card" data-category="Afrique" data-search="bénin afrique ouest culture société villes">
+        <div class="news-art orange">🇧🇯</div><div class="news-body"><span class="category-label">Afrique · Bénin</span><h3>Bénin et Afrique de l'Ouest : les sujets à garder à l'œil</h3><p>Un espace pour suivre les initiatives, les enjeux sociaux et les évolutions de la région.</p><div class="card-footer"><span>Région · 4 min</span><button class="bookmark" aria-label="Enregistrer">☆</button></div></div>
+      </article>
+      <article class="news-card" data-category="Culture" data-search="culture musique cinéma art livres divertissement">
+        <div class="news-art dark">🎬</div><div class="news-body"><span class="category-label">Culture</span><h3>Culture : les créations qui rapprochent les publics</h3><p>Musique, cinéma, livres et arts racontent les sociétés et font circuler les idées.</p><div class="card-footer"><span>Culture · 3 min</span><button class="bookmark" aria-label="Enregistrer">☆</button></div></div>
+      </article>
+      <div class="empty" id="emptyState">Aucun sujet ne correspond à votre recherche. Essayez un autre mot.</div>
+    </section>
+    <section class="lower-grid">
+      <div class="panel">
+        <h2>📊 Les sujets à suivre</h2>
+        <div class="trending"><div class="trend-num">01</div><div><h3>Les grands enjeux des relations internationales</h3><p>Monde · Analyse et contexte</p></div></div>
+        <div class="trending"><div class="trend-num">02</div><div><h3>La place du numérique dans l'éducation</h3><p>Technologie · Société</p></div></div>
+        <div class="trending"><div class="trend-num">03</div><div><h3>Le sport comme phénomène mondial</h3><p>Sport · Culture</p></div></div>
+      </div>
+      <div class="panel ai-panel">
+        <span class="ai-label">✦ WorldFlash AI</span><h2 style="margin:8px 0 10px">L'actualité, expliquée simplement.</h2>
+        <p>Posez une question et découvrez comment notre assistant pourrait vous aider à comprendre un sujet.</p>
+        <input class="ai-input" id="aiQuestion" placeholder="Ex. : Qu'est-ce que l'inflation ?">
+        <button class="primary-btn" id="askAi">Expliquer le sujet ↗</button>
+        <div class="ai-result" id="aiResult" role="status"></div>
+      </div>
+    </section>
+    <p class="notice">Prototype de démonstration : les cartes ci-dessus sont des exemples éditoriaux et ne constituent pas des nouvelles vérifiées en direct. La connexion à des sources d'actualités, aux horaires de publication et à un service d'IA sera nécessaire pour fournir de vraies informations actualisées.</p>
+  </main>
+  <footer class="footer"><div class="footer-inner"><div><strong>WorldFlash</strong> · L'info en mouvement 🌍<div class="notice">Comprendre le monde, sans perdre le fil.</div></div><div>Monde · Afrique · Sport · Tech · Sciences</div><div>© 2026 WorldFlash — Prototype</div></div></footer>
+</div>
+<script>
+const cards = [...document.querySelectorAll('.news-card')];
+const navButtons = [...document.querySelectorAll('.nav button')];
+const chips = [...document.querySelectorAll('.filter-chip')];
+const searchInput = document.getElementById('searchInput');
+let category = 'Tout';
+function updateCards() {
+  const query = searchInput.value.trim().toLocaleLowerCase('fr');
+  let visible = 0;
+  cards.forEach(card => {
+    const matchCategory = category === 'Tout' || card.dataset.category === category;
+    const matchQuery = !query || (card.dataset.search + ' ' + card.innerText).toLocaleLowerCase('fr').includes(query);
+    card.style.display = matchCategory && matchQuery ? '' : 'none';
+    if (matchCategory && matchQuery) visible++;
+  });
+  document.getElementById('resultCount').textContent = visible + (visible > 1 ? ' sujets' : ' sujet');
+  document.getElementById('emptyState').style.display = visible ? 'none' : 'block';
+}
+function setCategory(cat) {
+  category = cat;
+  navButtons.forEach(b => b.classList.toggle('active', b.dataset.cat === cat || (cat === 'Tout' && b.dataset.cat === 'Tout')));
+  chips.forEach(b => b.classList.toggle('selected', b.dataset.filter === cat));
+  updateCards();
+}
+navButtons.forEach(b => b.addEventListener('click', () => setCategory(b.dataset.cat)));
+chips.forEach(b => b.addEventListener('click', () => setCategory(b.dataset.filter)));
+searchInput.addEventListener('input', updateCards);
+document.querySelectorAll('.bookmark').forEach(btn => btn.addEventListener('click', () => {
+  btn.classList.toggle('saved');
+  btn.textContent = btn.classList.contains('saved') ? '★' : '☆';
+  btn.setAttribute('aria-label', btn.classList.contains('saved') ? 'Retirer des favoris' : 'Enregistrer');
+}));
+document.getElementById('askAi').addEventListener('click', () => {
+  const question = document.getElementById('aiQuestion').value.trim();
+  const result = document.getElementById('aiResult');
+  result.style.display = 'block';
+  result.textContent = question
+    ? 'Démo : pour expliquer « ' + question + ' », WorldFlash AI recherchera des sources fiables, comparera les informations et proposera un résumé clair avec des liens vers les sources. Le service IA n’est pas encore connecté dans ce prototype.'
+    : 'Écrivez un sujet ou une question pour voir le fonctionnement prévu de l’assistant.';
+});
+document.getElementById('today').textContent = new Intl.DateTimeFormat('fr-FR', {weekday:'long', day:'numeric', month:'long', year:'numeric'}).format(new Date());
+</script>
+</body>
+</html>
